@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ Calendrier Enchanté ✦</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lavender: #c9b8e8;
+    --lavender-light: #e8dff5;
+    --lavender-dark: #9b84cc;
+    --gold: #d4af6a;
+    --gold-light: #f0d898;
+    --gold-dark: #a07830;
+    --ivory: #faf6ee;
+    --ivory-dark: #ede4d0;
+    --text-dark: #2a1f3d;
+    --text-mid: #5a4a7a;
+    --text-light: #8a7aaa;
+    --rose: #e8c4d0;
+    --mint: #b8ddd0;
+    --shadow: rgba(60,30,100,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Crimson Pro', serif;
+    background: var(--ivory);
+    color: var(--text-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── STARFIELD BACKGROUND ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(201,184,232,0.25) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(212,175,106,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 10%, rgba(184,221,208,0.2) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: twinkle var(--dur, 3s) ease-in-out infinite;
+    opacity: 0;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: var(--op, 0.6); transform: scale(1); }
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 3rem 2rem 1.5rem;
+  }
+  .header-ornament {
+    font-size: 1.4rem;
+    color: var(--gold);
+    letter-spacing: 0.5rem;
+    margin-bottom: 0.5rem;
+    animation: fadeIn 1s ease forwards;
+  }
+  h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.6rem, 4vw, 3rem);
+    color: var(--text-dark);
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    animation: fadeInUp 1s ease forwards;
+    text-shadow: 0 2px 20px rgba(201,184,232,0.5);
+  }
+  h1 span { color: var(--lavender-dark); }
+  .subtitle {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: var(--text-light);
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+    animation: fadeIn 1.5s ease forwards;
+  }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-section {
+    position: relative;
+    z-index: 10;
+    max-width: 600px;
+    margin: 1rem auto 2rem;
+    padding: 0 2rem;
+    animation: fadeIn 2s ease forwards;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 0.4rem;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+  }
+  .progress-track {
+    height: 8px;
+    background: var(--ivory-dark);
+    border-radius: 99px;
+    overflow: hidden;
+    border: 1px solid rgba(212,175,106,0.3);
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--lavender-dark), var(--gold));
+    border-radius: 99px;
+    transition: width 1s ease;
+    position: relative;
+  }
+  .progress-fill::after {
+    content: '✦';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    color: var(--gold);
+  }
+
+  /* ─── NAVIGATION TABS ─── */
+  .nav-tabs {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    padding: 0 1rem;
+  }
+  .nav-btn {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.7rem;
+    padding: 0.5rem 1.2rem;
+    border: 1px solid var(--lavender);
+    background: transparent;
+    color: var(--text-mid);
+    border-radius: 99px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.05em;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    background: linear-gradient(135deg, var(--lavender-dark), var(--gold-dark));
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 20px rgba(155,132,204,0.4);
+  }
+
+  /* ─── YEAR VIEW ─── */
+  #year-view {
+    position: relative;
+    z-index: 10;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem 3rem;
+    display: none;
+  }
+  #year-view.active { display: block; }
+
+  .year-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .month-mini-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1rem;
+    border: 1px solid var(--ivory-dark);
+    box-shadow: 0 4px 20px var(--shadow);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .month-mini-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(155,132,204,0.25);
+    border-color: var(--lavender);
+  }
+  .month-mini-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.8rem;
+    color: var(--text-dark);
+    margin-bottom: 0.7rem;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .month-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .mini-day-header {
+    font-size: 0.5rem;
+    text-align: center;
+    color: var(--text-light);
+    padding: 2px 0;
+    font-family: 'IM Fell English', serif;
+  }
+  .mini-day {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.5rem;
+    color: var(--text-mid);
+    background: var(--ivory);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .mini-day.empty { background: transparent; }
+  .mini-day.today { background: var(--gold-light); color: var(--text-dark); font-weight: 600; }
+  .mini-day.opened { background: var(--lavender-light); }
+  .mini-day.has-note::after {
+    content: '·';
+    position: absolute;
+    bottom: 0;
+    right: 1px;
+    color: var(--lavender-dark);
+    font-size: 0.8rem;
+    line-height: 1;
+  }
+  .mini-day.has-rdv::after {
+    content: '·';
+    position: absolute;
+    bottom: 0;
+    right: 1px;
+    color: var(--gold-dark);
+    font-size: 0.8rem;
+    line-height: 1;
+  }
+  .mini-day:hover:not(.empty) { background: var(--lavender); color: white; }
+
+  /* ─── MONTH VIEW ─── */
+  #month-view {
+    position: relative;
+    z-index: 10;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem 3rem;
+    display: none;
+  }
+  #month-view.active { display: block; }
+
+  .month-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .month-nav-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--lavender);
+    background: white;
+    color: var(--lavender-dark);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .month-nav-btn:hover {
+    background: var(--lavender-dark);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 15px rgba(155,132,204,0.4);
+  }
+  .month-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1rem, 3vw, 1.6rem);
+    color: var(--text-dark);
+    text-align: center;
+    min-width: 250px;
+  }
+
+  .calendar-grid-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .day-header {
+    text-align: center;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    padding: 0.3rem 0;
+  }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+
+  /* ─── DAY CELL ─── */
+  .day-cell {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid var(--ivory-dark);
+    min-height: 110px;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .day-cell.empty { background: transparent; border-color: transparent; }
+  .day-cell:not(.empty):hover {
+    box-shadow: 0 6px 25px rgba(155,132,204,0.2);
+    border-color: var(--lavender);
+    transform: translateY(-2px);
+  }
+  .day-cell.today {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(212,175,106,0.3), 0 6px 25px rgba(212,175,106,0.2);
+  }
+  .day-cell.future .envelope-zone { opacity: 0.4; }
+
+  .day-number {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.65rem;
+    color: var(--text-light);
+    margin-bottom: 0.3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .day-number .date-label { color: var(--text-dark); font-size: 0.75rem; }
+  .today .day-number .date-label {
+    background: var(--gold);
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ─── ENVELOPE ─── */
+  .envelope-zone {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  /* ─── ENVELOPE (CLOSED) ─── */
+  .envelope-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .envelope-wrap:hover { transform: scale(1.08) rotate(-1deg); }
+
+  .envelope {
+    width: 54px;
+    height: 40px;
+    position: relative;
+    transition: transform 0.3s ease;
+  }
+  .envelope-body {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    position: absolute;
+    bottom: 0;
+    box-shadow: 0 2px 8px rgba(60,30,100,0.12);
+  }
+  .envelope-flap {
+    width: 0; height: 0;
+    position: absolute; top: 0; left: 0;
+    border-left: 27px solid transparent;
+    border-right: 27px solid transparent;
+    transform-origin: top center;
+    transition: transform 0.4s ease;
+    z-index: 2;
+  }
+  .envelope-flap-bottom {
+    width: 0; height: 0;
+    position: absolute; bottom: 0; left: 0;
+    border-left: 27px solid transparent;
+    border-right: 27px solid transparent;
+    z-index: 1;
+  }
+  .envelope-side-l {
+    width: 0; height: 0;
+    position: absolute; left: 0; top: 0;
+    border-right: 25px solid transparent;
+    z-index: 1;
+  }
+  .envelope-side-r {
+    width: 0; height: 0;
+    position: absolute; right: 0; top: 0;
+    border-left: 25px solid transparent;
+    z-index: 1;
+  }
+  /* Seal dot on closed envelope */
+  .envelope-seal {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    z-index: 4;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.5);
+    transition: opacity 0.3s;
+  }
+
+  /* Envelope colors by type */
+  .env-quote .envelope-body { background: linear-gradient(160deg, #ede4f8, #d4c4f0); }
+  .env-quote .envelope-flap { border-bottom: 21px solid #c9b8e8; }
+  .env-quote .envelope-flap-bottom { border-top: 19px solid #baaade; }
+  .env-quote .envelope-side-l { border-bottom: 40px solid #ddd0f4; }
+  .env-quote .envelope-side-r { border-bottom: 40px solid #ddd0f4; }
+  .env-quote .envelope-seal { background: radial-gradient(circle at 40% 40%, #b89ee0, #8060b8); color: #fff; }
+
+  .env-image .envelope-body { background: linear-gradient(160deg, #f5ecd8, #ecd8b0); }
+  .env-image .envelope-flap { border-bottom: 21px solid #d4af6a; }
+  .env-image .envelope-flap-bottom { border-top: 19px solid #c09840; }
+  .env-image .envelope-side-l { border-bottom: 40px solid #e8d4a8; }
+  .env-image .envelope-side-r { border-bottom: 40px solid #e8d4a8; }
+  .env-image .envelope-seal { background: radial-gradient(circle at 40% 40%, #e8c060, #a07828); color: #fff; }
+
+  .env-rp .envelope-body { background: linear-gradient(160deg, #d8eee8, #b4d8cc); }
+  .env-rp .envelope-flap { border-bottom: 21px solid #80c0a8; }
+  .env-rp .envelope-flap-bottom { border-top: 19px solid #5aaa88; }
+  .env-rp .envelope-side-l { border-bottom: 40px solid #b8ddd0; }
+  .env-rp .envelope-side-r { border-bottom: 40px solid #b8ddd0; }
+  .env-rp .envelope-seal { background: radial-gradient(circle at 40% 40%, #70c0a0, #3a8868); color: #fff; }
+
+  .env-challenge .envelope-body { background: linear-gradient(160deg, #f4dce6, #eac0d0); }
+  .env-challenge .envelope-flap { border-bottom: 21px solid #d898a8; }
+  .env-challenge .envelope-flap-bottom { border-top: 19px solid #c07888; }
+  .env-challenge .envelope-side-l { border-bottom: 40px solid #e8c4d0; }
+  .env-challenge .envelope-side-r { border-bottom: 40px solid #e8c4d0; }
+  .env-challenge .envelope-seal { background: radial-gradient(circle at 40% 40%, #e09090, #b05060); color: #fff; }
+
+  /* ─── OPENED LETTER CARD ─── */
+  .envelope-opened-card {
+    width: 60px;
+    min-height: 50px;
+    border-radius: 5px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 6px 5px 5px;
+    box-shadow: 0 3px 12px rgba(60,30,100,0.14), 0 1px 3px rgba(60,30,100,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: visible;
+    cursor: pointer;
+  }
+  .envelope-opened-card:hover {
+    transform: scale(1.07) rotate(1deg);
+    box-shadow: 0 6px 20px rgba(60,30,100,0.22);
+  }
+  /* Letter peeking out from top */
+  .envelope-opened-card::before {
+    content: '';
+    position: absolute;
+    top: -9px;
+    left: 8px; right: 8px;
+    height: 14px;
+    border-radius: 3px 3px 0 0;
+    z-index: 0;
+  }
+  /* Bottom fold line */
+  .envelope-opened-card::after {
+    content: '';
+    position: absolute;
+    bottom: 10px; left: 8px; right: 8px;
+    height: 1px;
+    opacity: 0.35;
+  }
+
+  /* type colours */
+  .env-quote .envelope-opened-card {
+    background: linear-gradient(160deg, #ede4f8 60%, #d4c4f0);
+    border: 1px solid #c9b8e8;
+  }
+  .env-quote .envelope-opened-card::before { background: linear-gradient(160deg, #f8f4ff, #e8ddf8); border: 1px solid #d4c8f0; border-bottom: none; }
+  .env-quote .envelope-opened-card::after  { background: #b8a8dc; }
+
+  .env-image .envelope-opened-card {
+    background: linear-gradient(160deg, #f5ecd8 60%, #ecd8b0);
+    border: 1px solid #d4af6a;
+  }
+  .env-image .envelope-opened-card::before { background: linear-gradient(160deg, #fffaf0, #f5e8c8); border: 1px solid #e8d090; border-bottom: none; }
+  .env-image .envelope-opened-card::after  { background: #c09840; }
+
+  .env-rp .envelope-opened-card {
+    background: linear-gradient(160deg, #d8eee8 60%, #b4d8cc);
+    border: 1px solid #80c0a8;
+  }
+  .env-rp .envelope-opened-card::before { background: linear-gradient(160deg, #f0faf6, #d8eeea); border: 1px solid #90cca8; border-bottom: none; }
+  .env-rp .envelope-opened-card::after  { background: #5aaa88; }
+
+  .env-challenge .envelope-opened-card {
+    background: linear-gradient(160deg, #f4dce6 60%, #eac0d0);
+    border: 1px solid #d898a8;
+  }
+  .env-challenge .envelope-opened-card::before { background: linear-gradient(160deg, #fff0f4, #f8dde8); border: 1px solid #e0a8b8; border-bottom: none; }
+  .env-challenge .envelope-opened-card::after  { background: #c07888; }
+
+  /* Wax seal on opened card */
+  .opened-seal {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -8px; right: -6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    border: 1.5px solid rgba(255,255,255,0.7);
+    z-index: 5;
+  }
+  .env-quote   .opened-seal { background: radial-gradient(circle at 38% 38%, #b89ee0, #7050b0); color: #f0ecff; }
+  .env-image   .opened-seal { background: radial-gradient(circle at 38% 38%, #e8c860, #906820); color: #fffaf0; }
+  .env-rp      .opened-seal { background: radial-gradient(circle at 38% 38%, #70c0a0, #306850); color: #f0fff8; }
+  .env-challenge .opened-seal { background: radial-gradient(circle at 38% 38%, #e09898, #a04858); color: #fff4f4; }
+
+  /* Type icon in opened card */
+  .opened-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+    margin-top: 4px;
+  }
+  .opened-type-text {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.48rem;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+  .env-quote   .opened-type-text { color: #7050b0; }
+  .env-image   .opened-type-text { color: #a07020; }
+  .env-rp      .opened-type-text { color: #306850; }
+  .env-challenge .opened-type-text { color: #a04858; }
+
+  /* Shine lines on opened card */
+  .opened-lines {
+    position: absolute;
+    top: 14px; left: 7px; right: 7px;
+    display: flex; flex-direction: column; gap: 3px;
+    z-index: 1; opacity: 0.3;
+  }
+  .opened-line {
+    height: 1px;
+    border-radius: 1px;
+  }
+  .env-quote   .opened-line { background: #9b84cc; }
+  .env-image   .opened-line { background: #a07830; }
+  .env-rp      .opened-line { background: #3a8868; }
+  .env-challenge .opened-line { background: #c07888; }
+
+  /* ─── AGENDA DOTS & MARKERS ─── */
+  .agenda-dots {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 3px;
+    min-height: 8px;
+  }
+  .agenda-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .agenda-dot.rdv   { background: var(--gold-dark); box-shadow: 0 0 3px rgba(160,120,48,0.5); }
+  .agenda-dot.note  { background: var(--lavender-dark); box-shadow: 0 0 3px rgba(155,132,204,0.4); }
+
+  .agenda-preview {
+    margin-top: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .agenda-preview-item {
+    font-size: 0.58rem;
+    font-family: 'IM Fell English', serif;
+    color: var(--text-mid);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 3px;
+    border-radius: 3px;
+    line-height: 1.3;
+  }
+  .agenda-preview-item.is-rdv {
+    background: rgba(212,175,106,0.15);
+    border-left: 2px solid var(--gold);
+    font-style: normal;
+    color: var(--gold-dark);
+  }
+  .agenda-preview-item.is-note {
+    background: rgba(201,184,232,0.15);
+    border-left: 2px solid var(--lavender);
+    font-style: italic;
+    color: var(--text-mid);
+  }
+  .agenda-preview-time {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 0.54rem;
+    color: var(--gold-dark);
+    flex-shrink: 0;
+  }
+
+  /* Quick-add note button on future cells */
+  .quick-add-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--lavender-light);
+    border: 1px solid var(--lavender);
+    color: var(--lavender-dark);
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 3;
+    transition: all 0.2s;
+    line-height: 1;
+  }
+  .quick-add-btn:hover { background: var(--lavender-dark); color: white; border-color: transparent; }
+
+  /* ─── MODAL AGENDA SECTION ─── */
+  .modal-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.2rem;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--ivory-dark);
+  }
+  .modal-tab-btn {
+    flex: 1;
+    padding: 0.55rem 0.5rem;
+    background: white;
+    border: none;
+    cursor: pointer;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    transition: all 0.2s;
+    border-right: 1px solid var(--ivory-dark);
+  }
+  .modal-tab-btn:last-child { border-right: none; }
+  .modal-tab-btn.active {
+    background: linear-gradient(135deg, var(--lavender-light), var(--ivory));
+    color: var(--text-dark);
+    font-weight: 600;
+  }
+  .modal-tab-panel { display: none; }
+  .modal-tab-panel.active { display: block; }
+
+  /* Note type toggle */
+  .note-type-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.7rem;
+  }
+  .note-type-btn {
+    flex: 1;
+    padding: 0.35rem;
+    border-radius: 8px;
+    border: 1px solid var(--ivory-dark);
+    background: white;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .note-type-btn.active-rdv { background: rgba(212,175,106,0.2); border-color: var(--gold); color: var(--gold-dark); }
+  .note-type-btn.active-note { background: rgba(201,184,232,0.2); border-color: var(--lavender); color: var(--lavender-dark); }
+
+  .rdv-time-row {
+    display: none;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    align-items: center;
+  }
+  .rdv-time-row.visible { display: flex; }
+  .rdv-time-input {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.9rem;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    background: white;
+    color: var(--text-dark);
+    outline: none;
+    width: 110px;
+  }
+  .rdv-time-label {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+
+  /* Note list items */
+  .note-list-item.item-rdv .note-bullet { background: var(--gold-dark); }
+  .note-list-item.item-note .note-bullet { background: var(--lavender-dark); }
+  .note-time-tag {
+    font-size: 0.72rem;
+    background: rgba(212,175,106,0.2);
+    color: var(--gold-dark);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-family: 'Crimson Pro', serif;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(42,31,61,0.6);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .modal-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--ivory);
+    border-radius: 24px;
+    max-width: 520px;
+    width: 100%;
+    padding: 2.5rem;
+    position: relative;
+    border: 1px solid var(--ivory-dark);
+    box-shadow: 0 30px 80px rgba(42,31,61,0.3);
+    transform: translateY(30px) scale(0.95);
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-overlay.visible .modal {
+    transform: translateY(0) scale(1);
+  }
+
+  .modal-date {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+  .modal-day-num {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+  }
+
+  .surprise-box {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--ivory-dark);
+    position: relative;
+    overflow: hidden;
+  }
+  .surprise-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .surprise-box.type-quote::before { background: linear-gradient(90deg, var(--lavender-dark), var(--lavender-light)); }
+  .surprise-box.type-image::before { background: linear-gradient(90deg, var(--gold-dark), var(--gold-light)); }
+  .surprise-box.type-rp::before { background: linear-gradient(90deg, #60a888, #b8ddd0); }
+  .surprise-box.type-challenge::before { background: linear-gradient(90deg, #c07070, #e8c4d0); }
+
+  .surprise-type-label {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .type-quote .surprise-type-label { color: var(--lavender-dark); }
+  .type-image .surprise-type-label { color: var(--gold-dark); }
+  .type-rp .surprise-type-label { color: #60a888; }
+  .type-challenge .surprise-type-label { color: #c07070; }
+
+  .surprise-content {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--text-dark);
+  }
+  .surprise-content.quote {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    text-align: center;
+  }
+  .quote-attribution {
+    display: block;
+    font-family: 'Crimson Pro', serif;
+    font-style: normal;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 0.5rem;
+    text-align: right;
+  }
+  .surprise-image {
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 0.5rem;
+    max-height: 250px;
+    object-fit: cover;
+  }
+  .rp-code {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    background: var(--ivory);
+    border: 1px solid var(--ivory-dark);
+    border-radius: 8px;
+    padding: 0.8rem;
+    color: var(--text-mid);
+    word-break: break-all;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .rp-code:hover { background: var(--lavender-light); }
+  .copy-hint {
+    font-size: 0.7rem;
+    color: var(--text-light);
+    margin-top: 0.4rem;
+    font-style: italic;
+  }
+
+  /* ─── NOTES IN MODAL ─── */
+  .modal-notes-section {
+    margin-bottom: 1.5rem;
+  }
+  .modal-section-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--text-light);
+    margin-bottom: 0.8rem;
+  }
+  .note-list { list-style: none; margin-bottom: 0.8rem; }
+  .note-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--ivory-dark);
+    font-size: 0.9rem;
+    color: var(--text-dark);
+  }
+  .note-bullet {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--lavender-dark);
+    margin-top: 0.35rem;
+    flex-shrink: 0;
+  }
+  .note-delete {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: color 0.2s;
+    flex-shrink: 0;
+  }
+  .note-delete:hover { color: #c07070; }
+
+  .note-input-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .note-input {
+    flex: 1;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--ivory-dark);
+    border-radius: 8px;
+    background: white;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .note-input:focus { border-color: var(--lavender); }
+  .note-input::placeholder { color: var(--text-light); font-style: italic; }
+  .note-add-submit {
+    padding: 0.5rem 1rem;
+    background: var(--lavender-dark);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    transition: all 0.2s;
+  }
+  .note-add-submit:hover { background: var(--gold-dark); }
+
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--ivory-dark);
+    background: white;
+    color: var(--text-light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { background: var(--text-dark); color: white; border-color: transparent; }
+
+  /* ─── NOTE TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--text-dark);
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border-radius: 99px;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    z-index: 2000;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .sync-status {
+    position: fixed;
+    bottom: 1.2rem;
+    right: 1.5rem;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.78rem;
+    color: var(--text-light);
+    z-index: 500;
+    transition: color 0.4s;
+    pointer-events: none;
+  }
+
+  .day-cell { animation: fadeIn 0.3s ease forwards; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 640px) {
+    .day-cell { min-height: 80px; }
+    .envelope { width: 40px; height: 30px; }
+    .envelope-flap { border-left-width: 20px; border-right-width: 20px; }
+    .envelope-flap-bottom { border-left-width: 20px; border-right-width: 20px; }
+    .envelope-side-l { border-right-width: 18px; }
+    .envelope-side-r { border-left-width: 18px; }
+  }
+
+  /* ─── LOCK OVERLAY ─── */
+  .lock-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(250,246,238,0.7);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--text-light);
+    z-index: 2;
+    backdrop-filter: blur(1px);
+  }
+
+  .envelope-label {
+    font-size: 0.55rem;
+    text-align: center;
+    color: var(--text-light);
+    margin-top: 3px;
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
+<!-- Header -->
+<header>
+  <div class="header-ornament">✦ · · ✦ · · ✦</div>
+  <h1>Calendrier <span>Enchanté</span></h1>
+  <div class="subtitle">Février 2026 — Février 2027</div>
+</header>
+
+<!-- Progress Bar -->
+<div class="progress-section">
+  <div class="progress-label">
+    <span id="progress-text">Chargement...</span>
+    <span id="progress-pct">0%</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- Navigation Tabs -->
+<div class="nav-tabs">
+  <button class="nav-btn active" onclick="showView('month')">✦ Vue Mensuelle</button>
+  <button class="nav-btn" onclick="showView('year')">✦ Vue Annuelle</button>
+</div>
+
+<!-- Test Mode Banner -->
+<div id="test-banner" style="
+  position:relative;z-index:10;
+  max-width:600px;margin:0 auto 1.5rem;padding:0 1.5rem;
+">
+  <div style="
+    background:linear-gradient(135deg,rgba(155,132,204,0.15),rgba(212,175,106,0.15));
+    border:1px solid var(--lavender);border-radius:12px;
+    padding:0.8rem 1rem;display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;
+  ">
+    <span style="font-family:'IM Fell English',serif;font-style:italic;font-size:0.85rem;color:var(--text-mid);flex:1;min-width:160px">
+      ✦ Mode test — date simulée :
+    </span>
+    <input type="date" id="test-date" style="
+      font-family:'Crimson Pro',serif;font-size:0.9rem;
+      border:1px solid var(--lavender);border-radius:8px;
+      padding:0.3rem 0.6rem;background:white;color:var(--text-dark);
+      cursor:pointer;outline:none;
+    ">
+    <button onclick="applyTestDate()" style="
+      font-family:'IM Fell English',serif;font-style:italic;
+      font-size:0.85rem;padding:0.3rem 0.9rem;
+      background:var(--lavender-dark);color:white;
+      border:none;border-radius:8px;cursor:pointer;
+      transition:background 0.2s;
+    " onmouseover="this.style.background='var(--gold-dark)'" onmouseout="this.style.background='var(--lavender-dark)'">Simuler</button>
+    <button onclick="resetTestDate()" style="
+      font-family:'IM Fell English',serif;font-style:italic;
+      font-size:0.85rem;padding:0.3rem 0.9rem;
+      background:none;color:var(--text-light);
+      border:1px solid var(--ivory-dark);border-radius:8px;cursor:pointer;
+      transition:all 0.2s;
+    " onmouseover="this.style.borderColor='var(--lavender)';this.style.color='var(--text-dark)'" onmouseout="this.style.borderColor='var(--ivory-dark)';this.style.color='var(--text-light)'">Aujourd'hui</button>
+    <span id="test-status" style="font-size:0.75rem;color:var(--gold-dark);font-style:italic;width:100%;display:none"></span>
+  </div>
+</div>
+
+<!-- Month View -->
+<div id="month-view" class="active">
+  <div class="month-nav">
+    <button class="month-nav-btn" onclick="changeMonth(-1)">‹</button>
+    <div class="month-title" id="month-title"></div>
+    <button class="month-nav-btn" onclick="changeMonth(1)">›</button>
+  </div>
+  <div class="calendar-grid-header" id="day-headers"></div>
+  <div class="calendar-grid" id="calendar-grid"></div>
+</div>
+
+<!-- Year View -->
+<div id="year-view">
+  <div class="year-grid" id="year-grid"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOnBg(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-date" id="modal-date"></div>
+    <div class="modal-day-num" id="modal-day-num"></div>
+
+    <!-- Tabs -->
+    <div class="modal-tabs" id="modal-tabs">
+      <button class="modal-tab-btn active" onclick="switchTab('surprise')">✦ Surprise</button>
+      <button class="modal-tab-btn" onclick="switchTab('agenda')">📅 Agenda</button>
+    </div>
+
+    <!-- Surprise panel -->
+    <div class="modal-tab-panel active" id="tab-surprise">
+      <div id="modal-surprise"></div>
+    </div>
+
+    <!-- Agenda panel -->
+    <div class="modal-tab-panel" id="tab-agenda">
+      <div class="modal-notes-section">
+        <div class="modal-section-title">✦ NOTES & RENDEZ-VOUS</div>
+
+        <!-- Type toggle -->
+        <div class="note-type-toggle">
+          <button class="note-type-btn active-rdv" id="btn-type-rdv" onclick="setNoteType('rdv')">📅 Rendez-vous</button>
+          <button class="note-type-btn" id="btn-type-note" onclick="setNoteType('note')">✦ Note libre</button>
+        </div>
+
+        <!-- Time row (rdv only) -->
+        <div class="rdv-time-row visible" id="rdv-time-row">
+          <span class="rdv-time-label">Heure :</span>
+          <input type="time" class="rdv-time-input" id="rdv-time-input">
+        </div>
+
+        <!-- Text input -->
+        <div class="note-input-row">
+          <input class="note-input" id="note-input" placeholder="Description..." onkeydown="if(event.key==='Enter')addNote()">
+          <button class="note-add-submit" onclick="addNote()">Ajouter</button>
+        </div>
+
+        <!-- List -->
+        <ul class="note-list" id="modal-note-list" style="margin-top:0.8rem"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Sync status -->
+<div class="sync-status" id="sync-status"></div>
+
+<script>
+// ─── CONFIG ───
+const START_DATE = new Date(2026, 1, 1); // 1 février 2026
+const END_DATE   = new Date(2027, 1, 28); // 28 fév 2027
+
+const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const DAYS_FR   = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const DAYS_FULL = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+
+// ─── TEST MODE ───
+let simulatedDate = null; // null = use real today
+
+function getSimulatedToday() {
+  return simulatedDate ? new Date(simulatedDate) : new Date();
+}
+
+function applyTestDate() {
+  const input = document.getElementById('test-date').value;
+  if (!input) return;
+  simulatedDate = input;
+  const d = new Date(input);
+  const label = `${d.getDate()} ${MONTHS_FR[d.getMonth()]} ${d.getFullYear()}`;
+  const status = document.getElementById('test-status');
+  status.textContent = `✦ Date simulée : ${label} — toutes les enveloppes jusqu'à cette date sont accessibles`;
+  status.style.display = 'block';
+  buildMonth();
+  showToast(`✦ Date simulée : ${label}`);
+}
+
+function resetTestDate() {
+  simulatedDate = null;
+  document.getElementById('test-date').value = '';
+  const status = document.getElementById('test-status');
+  status.style.display = 'none';
+  buildMonth();
+  showToast('✦ Retour à la date réelle');
+}
+
+// ─── SURPRISES DATA ───
+// Types: quote, image, rp, challenge
+const SURPRISES = {
+  // ── CITATIONS ──
+  "2026-02-01": { type: "quote", content: "Un nouveau chapitre commence. Tourne la page avec douceur et curiosité.", attribution: "— Invitation d'ouverture ✦" },
+  "2026-02-07": { type: "challenge", title: "🌙 Défi de Février", content: "Écris la première scène de RP de ce calendrier. Installe ton personnage quelque part qu'il n'a jamais visité. Que ressent-il en entrant ?" },
+  "2026-02-14": { type: "quote", content: "Whatever our souls are made of, his and mine are the same.", attribution: "— Emily Brontë" },
+  "2026-02-20": { type: "rp", title: "Code RP : Ouverture de chapitre", code: '[div style="text-align:center;padding:16px;font-family:Georgia,serif;letter-spacing:0.08em;color:#9b84cc"]✦ Chapitre I ✦[br][em style="font-size:0.9em;color:#8a7aaa"]Titre du chapitre[/em][/div]', note: "Pour marquer le début d'un arc narratif ✦" },
+  "2026-02-28": { type: "quote", content: "Février se referme, mais l'histoire ne fait que commencer.", attribution: "— Passage de saison ✦" },
+  // ── CITATIONS ──
+  "2026-03-01": { type: "quote", content: "La magie, c'est croire en soi-même. Si tu y arrives, tout le reste est possible.", attribution: "— Goethe" },
+  "2026-03-04": { type: "quote", content: "Every day is a new beginning. Take a deep breath, smile, and start again.", attribution: "— Unknown" },
+  "2026-03-08": { type: "quote", content: "Les rêves sont des réalités qui attendent d'être vécues.", attribution: "— Victor Hugo" },
+  "2026-03-15": { type: "quote", content: "You are braver than you believe, stronger than you seem, and smarter than you think.", attribution: "— A.A. Milne" },
+  "2026-03-22": { type: "quote", content: "La vie est une fleur dont l'amour est le miel.", attribution: "— Victor Hugo" },
+  "2026-04-01": { type: "quote", content: "Not all those who wander are lost.", attribution: "— J.R.R. Tolkien" },
+  "2026-04-10": { type: "quote", content: "Il n'y a pas de chemin vers le bonheur, le bonheur est le chemin.", attribution: "— Thich Nhat Hanh" },
+  "2026-04-20": { type: "quote", content: "In the middle of difficulty lies opportunity.", attribution: "— Albert Einstein" },
+  "2026-05-01": { type: "quote", content: "La forêt précède les peuples, le désert les suit.", attribution: "— Chateaubriand" },
+  "2026-05-15": { type: "quote", content: "Magic exists. Who can doubt it, when there are rainbows and wildflowers, the music of the wind and the silence of the stars?", attribution: "— Nora Roberts" },
+  "2026-06-01": { type: "quote", content: "L'imagination est plus importante que la connaissance.", attribution: "— Albert Einstein" },
+  "2026-06-21": { type: "quote", content: "She is too fond of books, and it has turned her brain.", attribution: "— Louisa May Alcott" },
+  "2026-07-04": { type: "quote", content: "Le monde est un livre, et ceux qui ne voyagent pas n'en lisent qu'une page.", attribution: "— Saint Augustin" },
+  "2026-07-14": { type: "quote", content: "We accept the love we think we deserve.", attribution: "— Stephen Chbosky" },
+  "2026-08-01": { type: "quote", content: "La beauté sauvera le monde.", attribution: "— Fiodor Dostoïevski" },
+  "2026-08-15": { type: "quote", content: "Stars can't shine without darkness.", attribution: "— Unknown" },
+  "2026-09-01": { type: "quote", content: "Automne, saison des métamorphoses. L'or des forêts n'est que la robe des adieux.", attribution: "— Poème libre" },
+  "2026-09-22": { type: "quote", content: "I took a deep breath and listened to the old brag of my heart: I am, I am, I am.", attribution: "— Sylvia Plath" },
+  "2026-10-01": { type: "quote", content: "Le silence est la langue de tous les forts.", attribution: "— Khalil Gibran" },
+  "2026-10-31": { type: "quote", content: "By the pricking of my thumbs, something wicked this way comes.", attribution: "— Shakespeare" },
+  "2026-11-11": { type: "quote", content: "Darkness cannot drive out darkness; only light can do that.", attribution: "— Martin Luther King Jr." },
+  "2026-12-01": { type: "quote", content: "L'hiver est une maison où l'on rentre souvent sans y être invité.", attribution: "— Proverbe" },
+  "2026-12-21": { type: "quote", content: "The longest night is the threshold of the returning light.", attribution: "— Solstice Blessing" },
+  "2027-01-01": { type: "quote", content: "Et si l'on commençait l'année en se promettant simplement d'être doux envers soi-même ?", attribution: "— Invitation de passage" },
+  "2027-02-14": { type: "quote", content: "Whatever our souls are made of, his and mine are the same.", attribution: "— Emily Brontë" },
+  "2027-02-28": { type: "quote", content: "Une année s'achève. Tu as grandi, tu as voyagé, tu as aimé. C'est déjà tout.", attribution: "— Fin de calendrier ✦" },
+
+  // ── IMAGES ──
+  "2026-03-20": { type: "image", url: "https://images.unsplash.com/photo-1490750967868-88df5691a38e?w=600", caption: "🌸 Le printemps arrive..." },
+  "2026-04-05": { type: "image", url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600", caption: "✨ Lumière dorée d'avril" },
+  "2026-05-10": { type: "image", url: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600", caption: "🌿 La forêt se réveille" },
+  "2026-06-10": { type: "image", url: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=600", caption: "🌊 L'appel de l'horizon" },
+  "2026-07-20": { type: "image", url: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600", caption: "☀️ L'été dans toute sa splendeur" },
+  "2026-08-10": { type: "image", url: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=600", caption: "🌌 Sous les étoiles" },
+  "2026-09-10": { type: "image", url: "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=600", caption: "🍂 L'automne dorée" },
+  "2026-10-15": { type: "image", url: "https://images.unsplash.com/photo-1477414348463-c0eb7f1359b6?w=600", caption: "🌙 Nuit brumeuse d'octobre" },
+  "2026-11-20": { type: "image", url: "https://images.unsplash.com/photo-1457269449834-928af64c684d?w=600", caption: "🕯️ La lumière dans l'ombre" },
+  "2026-12-10": { type: "image", url: "https://images.unsplash.com/photo-1491002052546-bf38f186af56?w=600", caption: "❄️ Premier givre de l'hiver" },
+  "2027-01-15": { type: "image", url: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600", caption: "✨ Le ciel de janvier" },
+  "2027-02-10": { type: "image", url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600", caption: "🏔️ Vers de nouveaux sommets" },
+
+  // ── CODES RP ──
+  "2026-03-10": { type: "rp", title: "Code RP : Entrée en scène", code: '[div style="border-left:3px solid #c9b8e8;padding:10px;font-style:italic;color:#5a4a7a"]Votre texte de RP ici — description de scène, pensées intérieures, dialogue...[/div]', note: "Copiez ce code pour présenter vos RPs avec style ✦" },
+  "2026-04-15": { type: "rp", title: "Code RP : Citation stylisée", code: '[blockquote style="background:#f0e8ff;border-radius:8px;padding:12px;margin:0;font-family:Georgia,serif"]« Votre citation de personnage » — Nom du personnage[/blockquote]', note: "Parfait pour mettre en avant les paroles de vos PNJs ✦" },
+  "2026-05-20": { type: "rp", title: "Code RP : Pensées intérieures", code: '[em style="color:#9b84cc;font-size:0.9em"]~ Pensée intérieure du personnage — ce qu\'il ressent sans le dire ~ [/em]', note: "Pour les monologues intérieurs et réflexions ✦" },
+  "2026-06-25": { type: "rp", title: "Code RP : Flashback", code: '[div style="border:1px dashed #d4af6a;padding:10px;border-radius:8px;opacity:0.85;font-style:italic"]✦ FLASHBACK ✦ — Décrivez ici la scène du passé... ✦ FIN FLASHBACK ✦[/div]', note: "Pour les retours en arrière et souvenirs ✦" },
+  "2026-07-30": { type: "rp", title: "Code RP : Murmure", code: '[small style="color:#8a7aaa;letter-spacing:0.05em"]— dit-il dans un murmure, presque pour lui-même — [/small]', note: "Pour les voix basses et les secrets partagés ✦" },
+  "2026-08-25": { type: "rp", title: "Code RP : Accroche scénique", code: '[div style="text-align:center;font-size:1.1em;color:#d4af6a;padding:8px;letter-spacing:0.1em"]✦ · Lieu — Date fictive — Heure · ✦[/div]', note: "Pour poser le décor en début de scène ✦" },
+  "2026-09-30": { type: "rp", title: "Code RP : Avertissement de contenu", code: '[details][summary style="color:#c07070;cursor:pointer"]⚠ Contenu sensible — cliquer pour lire[/summary] Votre texte ici [/details]', note: "Pour les scènes difficiles avec contenu averti ✦" },
+  "2026-10-20": { type: "rp", title: "Code RP : Note du joueur (OOC)", code: '[div style="background:#f5f5f5;border-radius:6px;padding:8px;font-size:0.85em;color:#666"]OOC : Note hors-personnage pour vos partenaires de jeu[/div]', note: "Pour les commentaires hors-personnage ✦" },
+  "2026-11-25": { type: "rp", title: "Code RP : Dialogue de groupe", code: '[div][b style="color:#9b84cc"]Personnage A :[/b] ...[br][b style="color:#60a888"]Personnage B :[/b] ...[br][b style="color:#d4af6a"]Personnage C :[/b] ...[/div]', note: "Pour les scènes à plusieurs personnages ✦" },
+  "2026-12-25": { type: "rp", title: "Code RP : Lettre ou courrier", code: '[div style="font-family:Georgia,serif;background:#faf6ee;border:1px solid #ede4d0;padding:16px;border-radius:4px;font-style:italic"]Cher(e)... [br][br] Corps de la lettre [br][br] Avec mes voeux, [br] Votre signataire[/div]', note: "Pour les lettres, courriers et billets doux ✦" },
+  "2027-01-20": { type: "rp", title: "Code RP : Scène de rêve", code: '[div style="filter:blur(0.3px);background:linear-gradient(135deg,#e8dff5,#f0e8d0);padding:12px;border-radius:12px;font-style:italic;opacity:0.9"]~ Dans le rêve... ~ [/div]', note: "Pour les séquences oniriques et visions ✦" },
+  "2027-02-20": { type: "rp", title: "Code RP : Épilogue", code: '[div style="text-align:center;padding:20px;border-top:2px solid #d4af6a;border-bottom:2px solid #d4af6a;margin:10px 0;letter-spacing:0.08em"]✦ ÉPILOGUE ✦[br][br]Texte de conclusion...[br][br]✦ FIN ✦[/div]', note: "Pour clore une grande saga avec panache ✦" },
+
+  // ── DÉFIS ──
+  "2026-03-25": { type: "challenge", title: "🌸 Défi de Mars", content: "Écris une scène de RP dans un décor de printemps en fleurs. Tes personnages doivent avoir une conversation qu'ils n'ont jamais osé avoir avant." },
+  "2026-04-25": { type: "challenge", title: "🗡️ Défi d'Avril", content: "Write a RP scene where your character faces their greatest fear. The setting: a thunderstorm, midnight, alone." },
+  "2026-05-25": { type: "challenge", title: "🌿 Défi de Mai", content: "Crée un personnage secondaire en seulement 5 phrases qui le définissent entièrement. Puis écris la scène où ton personnage principal le rencontre pour la première fois." },
+  "2026-06-30": { type: "challenge", title: "☀️ Défi de Juin", content: "Write a scene set entirely at the golden hour, just before sunset. No dialogue allowed — describe everything through sensations and internal monologue only." },
+  "2026-07-25": { type: "challenge", title: "🏕️ Défi de Juillet", content: "Défi de l'été : écris une scène de RP d'une seule phrase — mais cette phrase doit contenir toute une histoire, un personnage entier, et une émotion forte." },
+  "2026-08-30": { type: "challenge", title: "🌙 Défi d'Août", content: "Écris une scène nocturne où ton personnage fait une révélation — sur lui-même, sur un autre, ou sur le monde dans lequel il vit. La nuit doit être un personnage à part entière." },
+  "2026-09-25": { type: "challenge", title: "🍂 Défi de Septembre", content: "Autumn challenge: write a farewell scene. Someone is leaving — where? Why? Forever? Make it bittersweet, not just sad." },
+  "2026-10-25": { type: "challenge", title: "🕯️ Défi d'Octobre", content: "Défi d'Halloween : écris une scène de RP horrifique... mais sans aucun monstre, aucun fantôme. La terreur doit venir de quelque chose de parfaitement humain." },
+  "2026-11-15": { type: "challenge", title: "🌧️ Défi de Novembre", content: "Write a RP scene in the rain. Your character is waiting for someone. Will they come?" },
+  "2026-12-15": { type: "challenge", title: "❄️ Défi de Décembre", content: "Défi de l'hiver : offre à ton personnage le cadeau qu'il ne demanderait jamais lui-même. Écris sa réaction." },
+  "2027-01-10": { type: "challenge", title: "✨ Défi de Janvier", content: "New year challenge: write a scene set exactly one year into your character's future. What has changed? What hasn't?" },
+  "2027-02-05": { type: "challenge", title: "💜 Défi de Février", content: "Défi de l'amour : écris une scène romantique sans utiliser une seule fois les mots 'amour', 'cœur', 'sentiment' ou 'émotion'. Montre sans jamais nommer." },
+};
+
+// ─── STATE ───
+let currentMonth = START_DATE.getMonth();
+let currentYear  = START_DATE.getFullYear();
+let openedDays = {};
+let notes = {};
+let currentModalKey = null;
+
+// ─── GOOGLE SHEETS SYNC ───
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw2V382rhEHvptb1lRxV6bIxEqLl5aRMVMvTrCAMLkROYQTurOi_C3PVMpXyh7OUWEd/exec';
+let syncTimeout = null;
+let isSyncing = false;
+
+function setSyncStatus(status) {
+  // status: 'saving' | 'saved' | 'error' | 'loading' | ''
+  const el = document.getElementById('sync-status');
+  if (!el) return;
+  const map = {
+    saving:  { icon: '↻', text: 'Sauvegarde…',   color: 'var(--text-light)' },
+    saved:   { icon: '✦', text: 'Synchronisé',    color: '#60a888' },
+    error:   { icon: '⚠', text: 'Hors ligne — données locales', color: '#c07070' },
+    loading: { icon: '↻', text: 'Chargement…',   color: 'var(--text-light)' },
+    '':      { icon: '',  text: '',               color: 'transparent' },
+  };
+  const s = map[status] || map[''];
+  el.style.color = s.color;
+  el.textContent = s.icon ? `${s.icon} ${s.text}` : '';
+  if (status === 'saving') el.style.animation = 'spin 1s linear infinite';
+  else el.style.animation = '';
+}
+
+async function loadState() {
+  setSyncStatus('loading');
+  try {
+    const res = await fetch(SHEET_URL, { method: 'GET' });
+    const json = await res.json();
+    if (json.ok && json.payload) {
+      openedDays = json.payload.openedDays || {};
+      notes      = json.payload.notes      || {};
+      // also persist locally as fallback
+      localStorage.setItem('encal_opened', JSON.stringify(openedDays));
+      localStorage.setItem('encal_notes',  JSON.stringify(notes));
+      setSyncStatus('saved');
+    } else {
+      throw new Error('empty');
+    }
+  } catch(e) {
+    // fallback to localStorage
+    try {
+      const o = localStorage.getItem('encal_opened');
+      const n = localStorage.getItem('encal_notes');
+      if (o) openedDays = JSON.parse(o);
+      if (n) notes      = JSON.parse(n);
+    } catch(_) {}
+    setSyncStatus('error');
+  }
+}
+
+function saveState() {
+  // Always write to localStorage immediately (instant fallback)
+  try {
+    localStorage.setItem('encal_opened', JSON.stringify(openedDays));
+    localStorage.setItem('encal_notes',  JSON.stringify(notes));
+  } catch(_) {}
+
+  // Debounce the remote save by 800ms to avoid hammering the API
+  clearTimeout(syncTimeout);
+  setSyncStatus('saving');
+  syncTimeout = setTimeout(async () => {
+    try {
+      const payload = { openedDays, notes };
+      const res = await fetch(SHEET_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'save', payload }),
+      });
+      const json = await res.json();
+      if (json.ok) {
+        setSyncStatus('saved');
+        setTimeout(() => setSyncStatus(''), 3000);
+      } else throw new Error('not ok');
+    } catch(e) {
+      setSyncStatus('error');
+    }
+  }, 800);
+}
+
+// ─── NOTE HELPERS ───
+let currentNoteType = 'rdv'; // 'rdv' or 'note'
+
+function setNoteType(type) {
+  currentNoteType = type;
+  document.getElementById('btn-type-rdv').className = 'note-type-btn' + (type === 'rdv' ? ' active-rdv' : '');
+  document.getElementById('btn-type-note').className = 'note-type-btn' + (type === 'note' ? ' active-note' : '');
+  const timeRow = document.getElementById('rdv-time-row');
+  timeRow.classList.toggle('visible', type === 'rdv');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.modal-tab-btn').forEach((b, i) => b.classList.toggle('active', (i === 0 && tab === 'surprise') || (i === 1 && tab === 'agenda')));
+  document.getElementById('tab-surprise').classList.toggle('active', tab === 'surprise');
+  document.getElementById('tab-agenda').classList.toggle('active', tab === 'agenda');
+}
+
+// Returns {rdvCount, noteCount} for a day key
+function getDayCounts(key) {
+  const items = notes[key] || [];
+  return {
+    rdvCount: items.filter(i => i.type === 'rdv').length,
+    noteCount: items.filter(i => i.type === 'note').length,
+  };
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('encal_opened', JSON.stringify(openedDays));
+    localStorage.setItem('encal_notes', JSON.stringify(notes));
+  } catch(e){}
+}
+
+// ─── UTILS ───
+function dateKey(y, m, d) {
+  return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+
+function today() {
+  const t = getSimulatedToday();
+  return dateKey(t.getFullYear(), t.getMonth(), t.getDate());
+}
+
+function isInRange(y, m, d) {
+  const date = new Date(y, m, d);
+  return date >= START_DATE && date <= END_DATE;
+}
+
+function isFuture(y, m, d) {
+  const date = new Date(y, m, d);
+  const t = getSimulatedToday(); t.setHours(0,0,0,0);
+  return date > t;
+}
+
+function getSurprise(key) {
+  return SURPRISES[key] || null;
+}
+
+function getSurpriseForDay(y, m, d) {
+  const key = dateKey(y, m, d);
+  if (SURPRISES[key]) return SURPRISES[key];
+  // default based on day number spread
+  const dayNum = Math.floor((new Date(y,m,d) - START_DATE) / 86400000);
+  const types = ['quote','challenge','rp','image'];
+  const t = types[dayNum % 4];
+  return { type: t, content: "Surprise à remplir ! Modifie le code pour ajouter ton contenu personnalisé ici.", title: "✦ Surprise du jour" };
+}
+
+function getEnvClass(type) {
+  return { quote: 'env-quote', image: 'env-image', rp: 'env-rp', challenge: 'env-challenge' }[type] || 'env-quote';
+}
+
+function getTypeIcon(type) {
+  return { quote: '✦', image: '⊹', rp: '⟡', challenge: '◈' }[type] || '✦';
+}
+
+function getTypeLabel(type) {
+  return { quote: 'Citation', image: 'Image', rp: 'Code RP', challenge: 'Défi' }[type] || 'Surprise';
+}
+
+// ─── STARS ───
+function initStars() {
+  const c = document.getElementById('stars');
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 3 + 1;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      --dur:${Math.random()*4+2}s;
+      --op:${Math.random()*0.5+0.2};
+      animation-delay:${Math.random()*5}s;
+    `;
+    c.appendChild(s);
+  }
+}
+
+// ─── PROGRESS ───
+function updateProgress() {
+  const t = new Date(); t.setHours(0,0,0,0);
+  const total = Math.floor((END_DATE - START_DATE) / 86400000) + 1;
+  const elapsed = Math.max(0, Math.floor((t - START_DATE) / 86400000) + 1);
+  const pct = Math.min(100, Math.round(elapsed / total * 100));
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-text').textContent = `Jour ${Math.min(elapsed, total)} sur ${total}`;
+}
+
+// ─── ENVELOPE HTML ───
+function envelopeHTML(type, opened) {
+  const cls = getEnvClass(type);
+  const icons = { quote: '✦', image: '⊹', rp: '⟡', challenge: '◈' };
+  const labels = { quote: 'Citation', image: 'Image', rp: 'Code RP', challenge: 'Défi' };
+  const emojis = { quote: '🪄', image: '🌸', rp: '📜', challenge: '⚔️' };
+
+  if (opened) {
+    return `<div class="envelope-opened-card ${cls}">
+      <div class="opened-lines">
+        <div class="opened-line" style="width:80%"></div>
+        <div class="opened-line" style="width:55%"></div>
+        <div class="opened-line" style="width:68%"></div>
+      </div>
+      <div class="opened-icon">${emojis[type]}</div>
+      <div class="opened-type-text">${labels[type]}<br>ouverte</div>
+      <div class="opened-seal">${icons[type]}</div>
+    </div>`;
+  }
+
+  return `<div class="envelope ${cls}">
+    <div class="envelope-body"></div>
+    <div class="envelope-flap"></div>
+    <div class="envelope-flap-bottom"></div>
+    <div class="envelope-side-l"></div>
+    <div class="envelope-side-r"></div>
+    <div class="envelope-seal">${icons[type]}</div>
+  </div>`;
+}
+
+// ─── BUILD MONTH VIEW ───
+function buildMonth() {
+  document.getElementById('month-title').textContent = `${MONTHS_FR[currentMonth]} ${currentYear}`;
+
+  const headers = document.getElementById('day-headers');
+  headers.innerHTML = DAYS_FR.map(d => `<div class="day-header">${d}</div>`).join('');
+
+  const grid = document.getElementById('calendar-grid');
+  grid.innerHTML = '';
+
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  let startDow = firstDay.getDay(); // 0=Sun
+  startDow = startDow === 0 ? 6 : startDow - 1; // convert to Mon-first
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const todayKey = today();
+
+  for (let i = 0; i < startDow; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'day-cell empty';
+    grid.appendChild(cell);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    if (!isInRange(currentYear, currentMonth, d)) {
+      const cell = document.createElement('div');
+      cell.className = 'day-cell empty';
+      grid.appendChild(cell);
+      continue;
+    }
+
+    const key = dateKey(currentYear, currentMonth, d);
+    const opened = !!openedDays[key];
+    const future = isFuture(currentYear, currentMonth, d);
+    const isToday = key === todayKey;
+    const surprise = getSurpriseForDay(currentYear, currentMonth, d);
+    const dayItems = notes[key] || [];
+    const rdvItems = dayItems.filter(i => i.type === 'rdv');
+    const noteItems = dayItems.filter(i => i.type === 'note');
+
+    const cell = document.createElement('div');
+    cell.className = `day-cell ${isToday ? 'today' : ''} ${future ? 'future' : ''}`;
+    cell.style.animationDelay = (d * 0.02) + 's';
+
+    // Agenda dots
+    let dotsHTML = '';
+    if (rdvItems.length > 0 || noteItems.length > 0) {
+      dotsHTML = `<div class="agenda-dots">
+        ${rdvItems.slice(0,3).map(() => `<div class="agenda-dot rdv"></div>`).join('')}
+        ${noteItems.slice(0,3).map(() => `<div class="agenda-dot note"></div>`).join('')}
+      </div>`;
+    }
+
+    // Agenda preview items (max 2)
+    let previewHTML = '';
+    const allItems = [...rdvItems, ...noteItems].slice(0, 2);
+    if (allItems.length > 0) {
+      previewHTML = `<div class="agenda-preview">
+        ${allItems.map(item => {
+          if (item.type === 'rdv') {
+            return `<div class="agenda-preview-item is-rdv">
+              ${item.time ? `<span class="agenda-preview-time">${item.time}</span>` : '📅'}
+              <span>${item.text}</span>
+            </div>`;
+          } else {
+            return `<div class="agenda-preview-item is-note">✦ ${item.text}</div>`;
+          }
+        }).join('')}
+      </div>`;
+    }
+
+    cell.innerHTML = `
+      <div class="day-number">
+        <span style="font-size:0.55rem">${DAYS_FR[(firstDay.getDay()+d-2+7)%7] || ''}</span>
+        <span class="date-label">${d}</span>
+      </div>
+      <div class="envelope-zone" onclick="openDayModal('${key}', ${currentYear}, ${currentMonth}, ${d})">
+        ${envelopeHTML(surprise.type, opened)}
+        <div class="envelope-label">${getTypeLabel(surprise.type)}</div>
+      </div>
+      ${dotsHTML}
+      ${previewHTML}
+      ${future ? `<button class="quick-add-btn" onclick="openAgendaModal(event,'${key}',${currentYear},${currentMonth},${d})" title="Ajouter un rendez-vous">+</button>` : ''}
+    `;
+
+    grid.appendChild(cell);
+  }
+}
+
+// ─── BUILD YEAR VIEW ───
+function buildYear() {
+  const grid = document.getElementById('year-grid');
+  grid.innerHTML = '';
+  const todayKey = today();
+
+  // Months: February 2026 to February 2027
+  const months = [
+    [2026,1],[2026,2],[2026,3],[2026,4],[2026,5],[2026,6],[2026,7],
+    [2026,8],[2026,9],[2026,10],[2026,11],[2026,12],[2027,0],[2027,1]
+  ];
+
+  months.forEach(([y, m]) => {
+    const firstDay = new Date(y, m, 1);
+    const daysInMonth = new Date(y, m+1, 0).getDate();
+    let startDow = firstDay.getDay();
+    startDow = startDow === 0 ? 6 : startDow - 1;
+
+    const card = document.createElement('div');
+    card.className = 'month-mini-card';
+    card.setAttribute('data-y', y);
+    card.setAttribute('data-m', m);
+
+    let miniGrid = `<div class="month-mini-title">${MONTHS_FR[m]} ${y}</div>
+      <div class="month-mini-grid">
+        ${DAYS_FR.map(d=>`<div class="mini-day-header">${d[0]}</div>`).join('')}`;
+
+    for (let i = 0; i < startDow; i++) miniGrid += `<div class="mini-day empty"></div>`;
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      if (!isInRange(y, m, d)) { miniGrid += `<div class="mini-day empty"></div>`; continue; }
+      const key = dateKey(y, m, d);
+      const dayItems = notes[key] || [];
+      const hasRdv = dayItems.some(i => i.type === 'rdv');
+      const hasNote = dayItems.some(i => i.type === 'note');
+      const cls = [
+        'mini-day',
+        key === todayKey ? 'today' : '',
+        openedDays[key] ? 'opened' : '',
+        hasRdv ? 'has-rdv' : (hasNote ? 'has-note' : '')
+      ].filter(Boolean).join(' ');
+      miniGrid += `<div class="${cls}" onclick="goToDay(${y},${m},${d})">${d}</div>`;
+    }
+    miniGrid += '</div>';
+    card.innerHTML = miniGrid;
+    card.addEventListener('click', (e) => {
+      if (e.target.classList.contains('mini-day')) return;
+      currentMonth = m; currentYear = y;
+      showView('month');
+      buildMonth();
+    });
+    grid.appendChild(card);
+  });
+}
+
+function goToDay(y, m, d) {
+  currentMonth = m; currentYear = y;
+  showView('month');
+  buildMonth();
+  setTimeout(() => openDayModal(dateKey(y,m,d), y, m, d), 300);
+}
+
+// ─── MODAL ───
+function openDayModal(key, y, m, d) {
+  const future = isFuture(y, m, d);
+  currentModalKey = key;
+
+  // For future days, open directly on agenda tab without opening the surprise
+  if (future) {
+    openAgendaModal(null, key, y, m, d);
+    return;
+  }
+
+  // Mark as opened
+  if (!openedDays[key]) { openedDays[key] = true; saveState(); buildMonth(); }
+
+  const surprise = getSurpriseForDay(y, m, d);
+  const dayItems = notes[key] || [];
+
+  document.getElementById('modal-date').textContent = `${DAYS_FULL[new Date(y,m,d).getDay() === 0 ? 6 : new Date(y,m,d).getDay()-1]} ${d} ${MONTHS_FR[m]} ${y}`;
+  document.getElementById('modal-day-num').textContent = `Jour ${Math.floor((new Date(y,m,d)-START_DATE)/86400000)+1} ✦`;
+
+  // Show both tabs
+  document.getElementById('modal-tabs').style.display = '';
+
+  // Surprise HTML
+  let surpriseHTML = `<div class="surprise-box type-${surprise.type}">
+    <div class="surprise-type-label">${getTypeIcon(surprise.type)} ${getTypeLabel(surprise.type).toUpperCase()}</div>`;
+
+  if (surprise.type === 'quote') {
+    surpriseHTML += `<div class="surprise-content quote">${surprise.content}${surprise.attribution ? `<span class="quote-attribution">${surprise.attribution}</span>` : ''}</div>`;
+  } else if (surprise.type === 'image') {
+    surpriseHTML += `<div class="surprise-content">${surprise.caption || ''}<img src="${surprise.url}" class="surprise-image" alt="image surprise" onerror="this.style.display='none'"></div>`;
+  } else if (surprise.type === 'rp') {
+    surpriseHTML += `<div class="surprise-content"><strong>${surprise.title || 'Code RP'}</strong><br><br><div class="rp-code" onclick="copyCode('${key}')" id="rp-code-${key}">${escapeHtml(surprise.code)}</div><div class="copy-hint">Cliquez pour copier le code ✦</div>${surprise.note ? `<br><em style="color:var(--text-light);font-size:0.9rem">${surprise.note}</em>` : ''}</div>`;
+  } else if (surprise.type === 'challenge') {
+    surpriseHTML += `<div class="surprise-content"><strong>${surprise.title || 'Défi'}</strong><br><br>${surprise.content}</div>`;
+  }
+  surpriseHTML += '</div>';
+  document.getElementById('modal-surprise').innerHTML = surpriseHTML;
+
+  renderModalNotes(key, dayItems);
+  switchTab('surprise');
+  document.getElementById('modal-overlay').classList.add('visible');
+  document.getElementById('note-input').value = '';
+}
+
+function openAgendaModal(event, key, y, m, d) {
+  if (event) event.stopPropagation();
+  currentModalKey = key;
+
+  const dayItems = notes[key] || [];
+  const future = isFuture(y, m, d);
+
+  const dowIdx = new Date(y,m,d).getDay();
+  document.getElementById('modal-date').textContent = `${DAYS_FULL[dowIdx === 0 ? 6 : dowIdx-1]} ${d} ${MONTHS_FR[m]} ${y}`;
+
+  if (future) {
+    document.getElementById('modal-day-num').innerHTML = `<span style="font-size:0.9rem;color:var(--text-light);font-family:'IM Fell English',serif;font-style:italic">Jour à venir ✦</span>`;
+    // Hide surprise tab for future days
+    document.getElementById('modal-tabs').style.display = 'none';
+    document.getElementById('tab-surprise').classList.remove('active');
+    document.getElementById('tab-agenda').classList.add('active');
+  } else {
+    document.getElementById('modal-day-num').textContent = `Jour ${Math.floor((new Date(y,m,d)-START_DATE)/86400000)+1} ✦`;
+    document.getElementById('modal-tabs').style.display = '';
+  }
+
+  renderModalNotes(key, dayItems);
+  if (!future) switchTab('agenda'); else { /* already set above */ }
+  document.getElementById('modal-overlay').classList.add('visible');
+  document.getElementById('note-input').value = '';
+  document.getElementById('rdv-time-input').value = '';
+  setNoteType('rdv');
+}
+
+function renderModalNotes(key, dayItems) {
+  const list = document.getElementById('modal-note-list');
+  if (!dayItems || dayItems.length === 0) {
+    list.innerHTML = '<li style="font-size:0.85rem;color:var(--text-light);font-style:italic;padding:0.5rem 0">Aucune entrée pour ce jour ✦</li>';
+    return;
+  }
+  // Sort: rdv first (by time), then notes
+  const sorted = [...dayItems].sort((a, b) => {
+    if (a.type === 'rdv' && b.type === 'note') return -1;
+    if (a.type === 'note' && b.type === 'rdv') return 1;
+    if (a.type === 'rdv' && b.type === 'rdv') return (a.time || '').localeCompare(b.time || '');
+    return 0;
+  });
+  list.innerHTML = sorted.map((item, i) => {
+    const origIdx = dayItems.indexOf(item);
+    if (item.type === 'rdv') {
+      return `<li class="note-list-item item-rdv">
+        <div class="note-bullet"></div>
+        ${item.time ? `<span class="note-time-tag">${item.time}</span>` : '<span style="font-size:0.8rem">📅</span>'}
+        <span>${item.text}</span>
+        <button class="note-delete" onclick="deleteNote('${key}', ${origIdx})">✕</button>
+      </li>`;
+    } else {
+      return `<li class="note-list-item item-note">
+        <div class="note-bullet"></div>
+        <span style="font-style:italic;color:var(--text-mid)">${item.text}</span>
+        <button class="note-delete" onclick="deleteNote('${key}', ${origIdx})">✕</button>
+      </li>`;
+    }
+  }).join('');
+}
+
+function addNote() {
+  const input = document.getElementById('note-input');
+  const val = input.value.trim();
+  if (!val || !currentModalKey) return;
+  if (!notes[currentModalKey]) notes[currentModalKey] = [];
+
+  const item = { type: currentNoteType, text: val };
+  if (currentNoteType === 'rdv') {
+    const timeVal = document.getElementById('rdv-time-input').value;
+    if (timeVal) item.time = timeVal;
+  }
+
+  notes[currentModalKey].push(item);
+  saveState();
+  input.value = '';
+  renderModalNotes(currentModalKey, notes[currentModalKey]);
+  buildMonth();
+  if (document.getElementById('year-view').classList.contains('active')) buildYear();
+  showToast(currentNoteType === 'rdv' ? '📅 Rendez-vous ajouté ✦' : '✦ Note ajoutée');
+}
+
+function deleteNote(key, idx) {
+  if (!notes[key]) return;
+  notes[key].splice(idx, 1);
+  if (notes[key].length === 0) delete notes[key];
+  saveState();
+  renderModalNotes(key, notes[key] || []);
+  buildMonth();
+  if (document.getElementById('year-view').classList.contains('active')) buildYear();
+}
+
+function copyCode(key) {
+  const surprise = getSurpriseForDay(...keyToYMD(key));
+  if (!surprise || surprise.type !== 'rp') return;
+  navigator.clipboard.writeText(surprise.code).then(() => showToast('Code copié ! ✦'));
+}
+
+function keyToYMD(key) {
+  const [y,m,d] = key.split('-').map(Number);
+  return [y, m-1, d];
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('visible');
+  currentModalKey = null;
+}
+
+function closeModalOnBg(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+// ─── TOAST ───
+let toastTimeout;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─── VIEW TOGGLE ───
+function showView(view) {
+  document.getElementById('month-view').classList.toggle('active', view === 'month');
+  document.getElementById('year-view').classList.toggle('active', view === 'year');
+  document.querySelectorAll('.nav-btn').forEach((b, i) => {
+    b.classList.toggle('active', (i === 0 && view === 'month') || (i === 1 && view === 'year'));
+  });
+  if (view === 'year') buildYear();
+}
+
+// ─── MONTH NAVIGATION ───
+function changeMonth(dir) {
+  const months = [
+    [2026,1],[2026,2],[2026,3],[2026,4],[2026,5],[2026,6],[2026,7],
+    [2026,8],[2026,9],[2026,10],[2026,11],[2026,12],[2027,0],[2027,1]
+  ];
+  const idx = months.findIndex(([y,m]) => y === currentYear && m === currentMonth);
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= months.length) return;
+  [currentYear, currentMonth] = months[newIdx];
+  buildMonth();
+}
+
+// ─── INIT ───
+initStars();
+updateProgress();
+
+// Pre-fill test date input with today
+const _today = new Date();
+const _pad = n => String(n).padStart(2,'0');
+document.getElementById('test-date').value = `${_today.getFullYear()}-${_pad(_today.getMonth()+1)}-${_pad(_today.getDate())}`;
+
+// Navigate to current month if in range, else start of calendar
+const t = new Date();
+if (t >= START_DATE && t <= END_DATE) {
+  currentMonth = t.getMonth();
+  currentYear = t.getFullYear();
+} else {
+  currentMonth = START_DATE.getMonth();
+  currentYear = START_DATE.getFullYear();
+}
+
+// Load from Google Sheets then render
+loadState().then(() => {
+  buildMonth();
+});
+
+// Keyboard nav
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'ArrowLeft' && !document.getElementById('modal-overlay').classList.contains('visible')) changeMonth(-1);
+  if (e.key === 'ArrowRight' && !document.getElementById('modal-overlay').classList.contains('visible')) changeMonth(1);
+});
+</script>
+</body>
+</html>
