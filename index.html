@@ -1332,78 +1332,57 @@ let openedDays = {};
 let notes = {};
 let currentModalKey = null;
 
-// ─── GOOGLE SHEETS SYNC ───
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbw2V382rhEHvptb1lRxV6bIxEqLl5aRMVMvTrCAMLkROYQTurOi_C3PVMpXyh7OUWEd/exec';
+// ─── STORAGE : Netlify Function → Google Sheets ───
+const API_URL = '/.netlify/functions/sheets';
 let syncTimeout = null;
-let isSyncing = false;
 
 function setSyncStatus(status) {
-  // status: 'saving' | 'saved' | 'error' | 'loading' | ''
   const el = document.getElementById('sync-status');
   if (!el) return;
   const map = {
-    saving:  { icon: '↻', text: 'Sauvegarde…',   color: 'var(--text-light)' },
-    saved:   { icon: '✦', text: 'Synchronisé',    color: '#60a888' },
-    error:   { icon: '⚠', text: 'Hors ligne — données locales', color: '#c07070' },
-    loading: { icon: '↻', text: 'Chargement…',   color: 'var(--text-light)' },
-    '':      { icon: '',  text: '',               color: 'transparent' },
+    saving:  { icon: '↻', text: 'Sauvegarde…',        color: 'var(--text-light)' },
+    saved:   { icon: '✦', text: 'Synchronisé',         color: '#60a888' },
+    error:   { icon: '⚠', text: 'Erreur de sync',      color: '#c07070' },
+    loading: { icon: '↻', text: 'Chargement…',         color: 'var(--text-light)' },
+    '':      { icon: '',  text: '',                     color: 'transparent' },
   };
   const s = map[status] || map[''];
   el.style.color = s.color;
   el.textContent = s.icon ? `${s.icon} ${s.text}` : '';
-  if (status === 'saving') el.style.animation = 'spin 1s linear infinite';
-  else el.style.animation = '';
+  el.style.animation = status === 'saving' || status === 'loading' ? 'spin 1.2s linear infinite' : '';
 }
 
 async function loadState() {
   setSyncStatus('loading');
   try {
-    const res = await fetch(SHEET_URL, { method: 'GET' });
+    const res  = await fetch(API_URL);
     const json = await res.json();
     if (json.ok && json.payload) {
       openedDays = json.payload.openedDays || {};
       notes      = json.payload.notes      || {};
-      // also persist locally as fallback
-      localStorage.setItem('encal_opened', JSON.stringify(openedDays));
-      localStorage.setItem('encal_notes',  JSON.stringify(notes));
-      setSyncStatus('saved');
-    } else {
-      throw new Error('empty');
     }
+    setSyncStatus('saved');
+    setTimeout(() => setSyncStatus(''), 2500);
   } catch(e) {
-    // fallback to localStorage
-    try {
-      const o = localStorage.getItem('encal_opened');
-      const n = localStorage.getItem('encal_notes');
-      if (o) openedDays = JSON.parse(o);
-      if (n) notes      = JSON.parse(n);
-    } catch(_) {}
     setSyncStatus('error');
   }
 }
 
 function saveState() {
-  // Always write to localStorage immediately (instant fallback)
-  try {
-    localStorage.setItem('encal_opened', JSON.stringify(openedDays));
-    localStorage.setItem('encal_notes',  JSON.stringify(notes));
-  } catch(_) {}
-
-  // Debounce the remote save by 800ms to avoid hammering the API
   clearTimeout(syncTimeout);
   setSyncStatus('saving');
   syncTimeout = setTimeout(async () => {
     try {
-      const payload = { openedDays, notes };
-      const res = await fetch(SHEET_URL, {
+      const res  = await fetch(API_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'save', payload }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'save', payload: { openedDays, notes } }),
       });
       const json = await res.json();
       if (json.ok) {
         setSyncStatus('saved');
-        setTimeout(() => setSyncStatus(''), 3000);
-      } else throw new Error('not ok');
+        setTimeout(() => setSyncStatus(''), 2500);
+      } else throw new Error();
     } catch(e) {
       setSyncStatus('error');
     }
