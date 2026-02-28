@@ -882,8 +882,9 @@
     width: 100%;
     border-radius: 12px;
     margin-top: 0.5rem;
-    max-height: 250px;
-    object-fit: cover;
+    max-height: 400px;
+    object-fit: contain;
+    display: block;
   }
   .rp-code {
     font-family: 'Courier New', monospace;
@@ -1100,42 +1101,6 @@
   <button class="nav-btn" onclick="showView('year')">✦ Vue Annuelle</button>
 </div>
 
-<!-- Test Mode Banner -->
-<div id="test-banner" style="
-  position:relative;z-index:10;
-  max-width:600px;margin:0 auto 1.5rem;padding:0 1.5rem;
-">
-  <div style="
-    background:linear-gradient(135deg,rgba(155,132,204,0.15),rgba(212,175,106,0.15));
-    border:1px solid var(--lavender);border-radius:12px;
-    padding:0.8rem 1rem;display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;
-  ">
-    <span style="font-family:'IM Fell English',serif;font-style:italic;font-size:0.85rem;color:var(--text-mid);flex:1;min-width:160px">
-      ✦ Mode test — date simulée :
-    </span>
-    <input type="date" id="test-date" style="
-      font-family:'Crimson Pro',serif;font-size:0.9rem;
-      border:1px solid var(--lavender);border-radius:8px;
-      padding:0.3rem 0.6rem;background:white;color:var(--text-dark);
-      cursor:pointer;outline:none;
-    ">
-    <button onclick="applyTestDate()" style="
-      font-family:'IM Fell English',serif;font-style:italic;
-      font-size:0.85rem;padding:0.3rem 0.9rem;
-      background:var(--lavender-dark);color:white;
-      border:none;border-radius:8px;cursor:pointer;
-      transition:background 0.2s;
-    " onmouseover="this.style.background='var(--gold-dark)'" onmouseout="this.style.background='var(--lavender-dark)'">Simuler</button>
-    <button onclick="resetTestDate()" style="
-      font-family:'IM Fell English',serif;font-style:italic;
-      font-size:0.85rem;padding:0.3rem 0.9rem;
-      background:none;color:var(--text-light);
-      border:1px solid var(--ivory-dark);border-radius:8px;cursor:pointer;
-      transition:all 0.2s;
-    " onmouseover="this.style.borderColor='var(--lavender)';this.style.color='var(--text-dark)'" onmouseout="this.style.borderColor='var(--ivory-dark)';this.style.color='var(--text-light)'">Aujourd'hui</button>
-    <span id="test-status" style="font-size:0.75rem;color:var(--gold-dark);font-style:italic;width:100%;display:none"></span>
-  </div>
-</div>
 
 <!-- Month View -->
 <div id="month-view" class="active">
@@ -1216,46 +1181,17 @@ const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','A
 const DAYS_FR   = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
 const DAYS_FULL = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
 
-// ─── TEST MODE ───
-let simulatedDate = null; // null = use real today
-
-function getSimulatedToday() {
-  return simulatedDate ? new Date(simulatedDate) : new Date();
-}
-
-function applyTestDate() {
-  const input = document.getElementById('test-date').value;
-  if (!input) return;
-  simulatedDate = input;
-  const d = new Date(input);
-  const label = `${d.getDate()} ${MONTHS_FR[d.getMonth()]} ${d.getFullYear()}`;
-  const status = document.getElementById('test-status');
-  status.textContent = `✦ Date simulée : ${label} — toutes les enveloppes jusqu'à cette date sont accessibles`;
-  status.style.display = 'block';
-  buildMonth();
-  showToast(`✦ Date simulée : ${label}`);
-}
-
-function resetTestDate() {
-  simulatedDate = null;
-  document.getElementById('test-date').value = '';
-  const status = document.getElementById('test-status');
-  status.style.display = 'none';
-  buildMonth();
-  showToast('✦ Retour à la date réelle');
-}
 
 // ─── SURPRISES DATA ───
 // Types: quote, image, rp, challenge
 const SURPRISES = {
   // ── CITATIONS ──
-  "2026-02-01": { type: "quote", content: "Un nouveau chapitre commence. Tourne la page avec douceur et curiosité.", attribution: "— Invitation d'ouverture ✦" },
-  "2026-02-07": { type: "challenge", title: "🌙 Défi de Février", content: "Écris la première scène de RP de ce calendrier. Installe ton personnage quelque part qu'il n'a jamais visité. Que ressent-il en entrant ?" },
+  "2026-03-01": { type: "image", url: "https://i.imgur.com/8MYLJBh.jpeg", caption: "JOYEUX ANNIVERSAIRE 🎂" },
+  "2026-03-02": { type: "quote", content: "Aba-dabba-doo", attirbution: "— Bibble" },
   "2026-02-14": { type: "quote", content: "Whatever our souls are made of, his and mine are the same.", attribution: "— Emily Brontë" },
   "2026-02-20": { type: "rp", title: "Code RP : Ouverture de chapitre", code: '[div style="text-align:center;padding:16px;font-family:Georgia,serif;letter-spacing:0.08em;color:#9b84cc"]✦ Chapitre I ✦[br][em style="font-size:0.9em;color:#8a7aaa"]Titre du chapitre[/em][/div]', note: "Pour marquer le début d'un arc narratif ✦" },
   "2026-02-28": { type: "quote", content: "Février se referme, mais l'histoire ne fait que commencer.", attribution: "— Passage de saison ✦" },
   // ── CITATIONS ──
-  "2026-03-01": { type: "quote", content: "La magie, c'est croire en soi-même. Si tu y arrives, tout le reste est possible.", attribution: "— Goethe" },
   "2026-03-04": { type: "quote", content: "Every day is a new beginning. Take a deep breath, smile, and start again.", attribution: "— Unknown" },
   "2026-03-08": { type: "quote", content: "Les rêves sont des réalités qui attendent d'être vécues.", attribution: "— Victor Hugo" },
   "2026-03-15": { type: "quote", content: "You are braver than you believe, stronger than you seem, and smarter than you think.", attribution: "— A.A. Milne" },
@@ -1281,20 +1217,6 @@ const SURPRISES = {
   "2027-01-01": { type: "quote", content: "Et si l'on commençait l'année en se promettant simplement d'être doux envers soi-même ?", attribution: "— Invitation de passage" },
   "2027-02-14": { type: "quote", content: "Whatever our souls are made of, his and mine are the same.", attribution: "— Emily Brontë" },
   "2027-02-28": { type: "quote", content: "Une année s'achève. Tu as grandi, tu as voyagé, tu as aimé. C'est déjà tout.", attribution: "— Fin de calendrier ✦" },
-
-  // ── IMAGES ──
-  "2026-03-20": { type: "image", url: "https://images.unsplash.com/photo-1490750967868-88df5691a38e?w=600", caption: "🌸 Le printemps arrive..." },
-  "2026-04-05": { type: "image", url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600", caption: "✨ Lumière dorée d'avril" },
-  "2026-05-10": { type: "image", url: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600", caption: "🌿 La forêt se réveille" },
-  "2026-06-10": { type: "image", url: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=600", caption: "🌊 L'appel de l'horizon" },
-  "2026-07-20": { type: "image", url: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600", caption: "☀️ L'été dans toute sa splendeur" },
-  "2026-08-10": { type: "image", url: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=600", caption: "🌌 Sous les étoiles" },
-  "2026-09-10": { type: "image", url: "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=600", caption: "🍂 L'automne dorée" },
-  "2026-10-15": { type: "image", url: "https://images.unsplash.com/photo-1477414348463-c0eb7f1359b6?w=600", caption: "🌙 Nuit brumeuse d'octobre" },
-  "2026-11-20": { type: "image", url: "https://images.unsplash.com/photo-1457269449834-928af64c684d?w=600", caption: "🕯️ La lumière dans l'ombre" },
-  "2026-12-10": { type: "image", url: "https://images.unsplash.com/photo-1491002052546-bf38f186af56?w=600", caption: "❄️ Premier givre de l'hiver" },
-  "2027-01-15": { type: "image", url: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600", caption: "✨ Le ciel de janvier" },
-  "2027-02-10": { type: "image", url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600", caption: "🏔️ Vers de nouveaux sommets" },
 
   // ── CODES RP ──
   "2026-03-10": { type: "rp", title: "Code RP : Entrée en scène", code: '[div style="border-left:3px solid #c9b8e8;padding:10px;font-style:italic;color:#5a4a7a"]Votre texte de RP ici — description de scène, pensées intérieures, dialogue...[/div]', note: "Copiez ce code pour présenter vos RPs avec style ✦" },
@@ -1428,7 +1350,7 @@ function dateKey(y, m, d) {
 }
 
 function today() {
-  const t = getSimulatedToday();
+  const t = new Date();
   return dateKey(t.getFullYear(), t.getMonth(), t.getDate());
 }
 
@@ -1439,7 +1361,7 @@ function isInRange(y, m, d) {
 
 function isFuture(y, m, d) {
   const date = new Date(y, m, d);
-  const t = getSimulatedToday(); t.setHours(0,0,0,0);
+  const t = new Date(); t.setHours(0,0,0,0);
   return date > t;
 }
 
@@ -1607,7 +1529,6 @@ function buildMonth() {
       </div>
       <div class="envelope-zone" onclick="openDayModal('${key}', ${currentYear}, ${currentMonth}, ${d})">
         ${envelopeHTML(surprise.type, opened)}
-        <div class="envelope-label">${getTypeLabel(surprise.type)}</div>
       </div>
       ${dotsHTML}
       ${previewHTML}
@@ -1709,8 +1630,10 @@ function openDayModal(key, y, m, d) {
 
   if (surprise.type === 'quote') {
     surpriseHTML += `<div class="surprise-content quote">${surprise.content}${surprise.attribution ? `<span class="quote-attribution">${surprise.attribution}</span>` : ''}</div>`;
+  } else if (surprise.type === 'image' && surprise.url) {
+    surpriseHTML += `<div class="surprise-content">${surprise.caption ? `<div style="margin-bottom:0.5rem">${surprise.caption}</div>` : ''}<img src="${surprise.url}" referrerpolicy="no-referrer" crossorigin="anonymous" class="surprise-image" alt="image surprise" onerror="this.onerror=null;this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<div style=\\'text-align:center;color:var(--text-light);font-style:italic;padding:1rem\\'>Image indisponible</div>')"></div>`;
   } else if (surprise.type === 'image') {
-    surpriseHTML += `<div class="surprise-content">${surprise.caption || ''}<img src="${surprise.url}" class="surprise-image" alt="image surprise" onerror="this.style.display='none'"></div>`;
+    surpriseHTML += `<div class="surprise-content"><div style="text-align:center;color:var(--text-light);font-style:italic;padding:1rem">Image à venir ✦</div></div>`;
   } else if (surprise.type === 'rp') {
     surpriseHTML += `<div class="surprise-content"><strong>${surprise.title || 'Code RP'}</strong><br><br><div class="rp-code" onclick="copyCode('${key}')" id="rp-code-${key}">${escapeHtml(surprise.code)}</div><div class="copy-hint">Cliquez pour copier le code ✦</div>${surprise.note ? `<br><em style="color:var(--text-light);font-size:0.9rem">${surprise.note}</em>` : ''}</div>`;
   } else if (surprise.type === 'challenge') {
