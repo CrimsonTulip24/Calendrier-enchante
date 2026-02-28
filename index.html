@@ -1081,7 +1081,7 @@
 <header>
   <div class="header-ornament">✦ · · ✦ · · ✦</div>
   <h1>Calendrier <span>Enchanté</span></h1>
-  <div class="subtitle">Février 2026 — Février 2027</div>
+  <div class="subtitle">Mars 2026 — Février 2027</div>
 </header>
 
 <!-- Progress Bar -->
@@ -1174,7 +1174,7 @@
 
 <script>
 // ─── CONFIG ───
-const START_DATE = new Date(2026, 1, 1); // 1 février 2026
+const START_DATE = new Date(2026, 2, 1); // 1 mars 2026
 const END_DATE   = new Date(2027, 1, 28); // 28 fév 2027
 
 const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -1187,39 +1187,11 @@ const DAYS_FULL = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Diman
 const SURPRISES = {
   // ── CITATIONS ──
   "2026-03-01": { type: "image", url: "https://i.imgur.com/8MYLJBh.jpeg", caption: "JOYEUX ANNIVERSAIRE 🎂" },
-  "2026-03-02": { type: "quote", content: "Aba-dabba-doo", attirbution: "— Bibble" },
-  "2026-02-14": { type: "quote", content: "Whatever our souls are made of, his and mine are the same.", attribution: "— Emily Brontë" },
-  "2026-02-20": { type: "rp", title: "Code RP : Ouverture de chapitre", code: '[div style="text-align:center;padding:16px;font-family:Georgia,serif;letter-spacing:0.08em;color:#9b84cc"]✦ Chapitre I ✦[br][em style="font-size:0.9em;color:#8a7aaa"]Titre du chapitre[/em][/div]', note: "Pour marquer le début d'un arc narratif ✦" },
-  "2026-02-28": { type: "quote", content: "Février se referme, mais l'histoire ne fait que commencer.", attribution: "— Passage de saison ✦" },
-  // ── CITATIONS ──
-  "2026-03-04": { type: "quote", content: "Every day is a new beginning. Take a deep breath, smile, and start again.", attribution: "— Unknown" },
-  "2026-03-08": { type: "quote", content: "Les rêves sont des réalités qui attendent d'être vécues.", attribution: "— Victor Hugo" },
-  "2026-03-15": { type: "quote", content: "You are braver than you believe, stronger than you seem, and smarter than you think.", attribution: "— A.A. Milne" },
-  "2026-03-22": { type: "quote", content: "La vie est une fleur dont l'amour est le miel.", attribution: "— Victor Hugo" },
-  "2026-04-01": { type: "quote", content: "Not all those who wander are lost.", attribution: "— J.R.R. Tolkien" },
-  "2026-04-10": { type: "quote", content: "Il n'y a pas de chemin vers le bonheur, le bonheur est le chemin.", attribution: "— Thich Nhat Hanh" },
-  "2026-04-20": { type: "quote", content: "In the middle of difficulty lies opportunity.", attribution: "— Albert Einstein" },
-  "2026-05-01": { type: "quote", content: "La forêt précède les peuples, le désert les suit.", attribution: "— Chateaubriand" },
-  "2026-05-15": { type: "quote", content: "Magic exists. Who can doubt it, when there are rainbows and wildflowers, the music of the wind and the silence of the stars?", attribution: "— Nora Roberts" },
-  "2026-06-01": { type: "quote", content: "L'imagination est plus importante que la connaissance.", attribution: "— Albert Einstein" },
-  "2026-06-21": { type: "quote", content: "She is too fond of books, and it has turned her brain.", attribution: "— Louisa May Alcott" },
-  "2026-07-04": { type: "quote", content: "Le monde est un livre, et ceux qui ne voyagent pas n'en lisent qu'une page.", attribution: "— Saint Augustin" },
-  "2026-07-14": { type: "quote", content: "We accept the love we think we deserve.", attribution: "— Stephen Chbosky" },
-  "2026-08-01": { type: "quote", content: "La beauté sauvera le monde.", attribution: "— Fiodor Dostoïevski" },
-  "2026-08-15": { type: "quote", content: "Stars can't shine without darkness.", attribution: "— Unknown" },
-  "2026-09-01": { type: "quote", content: "Automne, saison des métamorphoses. L'or des forêts n'est que la robe des adieux.", attribution: "— Poème libre" },
-  "2026-09-22": { type: "quote", content: "I took a deep breath and listened to the old brag of my heart: I am, I am, I am.", attribution: "— Sylvia Plath" },
-  "2026-10-01": { type: "quote", content: "Le silence est la langue de tous les forts.", attribution: "— Khalil Gibran" },
-  "2026-10-31": { type: "quote", content: "By the pricking of my thumbs, something wicked this way comes.", attribution: "— Shakespeare" },
-  "2026-11-11": { type: "quote", content: "Darkness cannot drive out darkness; only light can do that.", attribution: "— Martin Luther King Jr." },
-  "2026-12-01": { type: "quote", content: "L'hiver est une maison où l'on rentre souvent sans y être invité.", attribution: "— Proverbe" },
-  "2026-12-21": { type: "quote", content: "The longest night is the threshold of the returning light.", attribution: "— Solstice Blessing" },
-  "2027-01-01": { type: "quote", content: "Et si l'on commençait l'année en se promettant simplement d'être doux envers soi-même ?", attribution: "— Invitation de passage" },
-  "2027-02-14": { type: "quote", content: "Whatever our souls are made of, his and mine are the same.", attribution: "— Emily Brontë" },
-  "2027-02-28": { type: "quote", content: "Une année s'achève. Tu as grandi, tu as voyagé, tu as aimé. C'est déjà tout.", attribution: "— Fin de calendrier ✦" },
-
+  "2026-03-02": {type: "quote", content:"You can play the jester if you wish, but hold your tongue before my betrothed.", attribution: "— Jacaerys Targaryen"},
+  "2026-04-01": { type: "quote", content: "Aba-dabba-doo", attirbution: "— Bibble" },
+  
   // ── CODES RP ──
-  "2026-03-10": { type: "rp", title: "Code RP : Entrée en scène", code: '[div style="border-left:3px solid #c9b8e8;padding:10px;font-style:italic;color:#5a4a7a"]Votre texte de RP ici — description de scène, pensées intérieures, dialogue...[/div]', note: "Copiez ce code pour présenter vos RPs avec style ✦" },
+  "2026-04-10": { type: "rp", title: "Code RP : Entrée en scène", code: '[div style="border-left:3px solid #c9b8e8;padding:10px;font-style:italic;color:#5a4a7a"]Votre texte de RP ici — description de scène, pensées intérieures, dialogue...[/div]', note: "Copiez ce code pour présenter vos RPs avec style ✦" },
   "2026-04-15": { type: "rp", title: "Code RP : Citation stylisée", code: '[blockquote style="background:#f0e8ff;border-radius:8px;padding:12px;margin:0;font-family:Georgia,serif"]« Votre citation de personnage » — Nom du personnage[/blockquote]', note: "Parfait pour mettre en avant les paroles de vos PNJs ✦" },
   "2026-05-20": { type: "rp", title: "Code RP : Pensées intérieures", code: '[em style="color:#9b84cc;font-size:0.9em"]~ Pensée intérieure du personnage — ce qu\'il ressent sans le dire ~ [/em]', note: "Pour les monologues intérieurs et réflexions ✦" },
   "2026-06-25": { type: "rp", title: "Code RP : Flashback", code: '[div style="border:1px dashed #d4af6a;padding:10px;border-radius:8px;opacity:0.85;font-style:italic"]✦ FLASHBACK ✦ — Décrivez ici la scène du passé... ✦ FIN FLASHBACK ✦[/div]', note: "Pour les retours en arrière et souvenirs ✦" },
@@ -1233,7 +1205,7 @@ const SURPRISES = {
   "2027-02-20": { type: "rp", title: "Code RP : Épilogue", code: '[div style="text-align:center;padding:20px;border-top:2px solid #d4af6a;border-bottom:2px solid #d4af6a;margin:10px 0;letter-spacing:0.08em"]✦ ÉPILOGUE ✦[br][br]Texte de conclusion...[br][br]✦ FIN ✦[/div]', note: "Pour clore une grande saga avec panache ✦" },
 
   // ── DÉFIS ──
-  "2026-03-25": { type: "challenge", title: "🌸 Défi de Mars", content: "Écris une scène de RP dans un décor de printemps en fleurs. Tes personnages doivent avoir une conversation qu'ils n'ont jamais osé avoir avant." },
+  "2026-04-24": { type: "challenge", title: "🌸 Défi de Mars", content: "Écris une scène de RP dans un décor de printemps en fleurs. Tes personnages doivent avoir une conversation qu'ils n'ont jamais osé avoir avant." },
   "2026-04-25": { type: "challenge", title: "🗡️ Défi d'Avril", content: "Write a RP scene where your character faces their greatest fear. The setting: a thunderstorm, midnight, alone." },
   "2026-05-25": { type: "challenge", title: "🌿 Défi de Mai", content: "Crée un personnage secondaire en seulement 5 phrases qui le définissent entièrement. Puis écris la scène où ton personnage principal le rencontre pour la première fois." },
   "2026-06-30": { type: "challenge", title: "☀️ Défi de Juin", content: "Write a scene set entirely at the golden hour, just before sunset. No dialogue allowed — describe everything through sensations and internal monologue only." },
@@ -1335,13 +1307,6 @@ function getDayCounts(key) {
     rdvCount: items.filter(i => i.type === 'rdv').length,
     noteCount: items.filter(i => i.type === 'note').length,
   };
-}
-
-function saveState() {
-  try {
-    localStorage.setItem('encal_opened', JSON.stringify(openedDays));
-    localStorage.setItem('encal_notes', JSON.stringify(notes));
-  } catch(e){}
 }
 
 // ─── UTILS ───
@@ -1545,10 +1510,10 @@ function buildYear() {
   grid.innerHTML = '';
   const todayKey = today();
 
-  // Months: February 2026 to February 2027
+  // Months: March 2026 to February 2027
   const months = [
-    [2026,1],[2026,2],[2026,3],[2026,4],[2026,5],[2026,6],[2026,7],
-    [2026,8],[2026,9],[2026,10],[2026,11],[2026,12],[2027,0],[2027,1]
+    [2026,2],[2026,3],[2026,4],[2026,5],[2026,6],[2026,7],
+    [2026,8],[2026,9],[2026,10],[2026,11],[2027,0],[2027,1]
   ];
 
   months.forEach(([y, m]) => {
@@ -1787,8 +1752,8 @@ function showView(view) {
 // ─── MONTH NAVIGATION ───
 function changeMonth(dir) {
   const months = [
-    [2026,1],[2026,2],[2026,3],[2026,4],[2026,5],[2026,6],[2026,7],
-    [2026,8],[2026,9],[2026,10],[2026,11],[2026,12],[2027,0],[2027,1]
+    [2026,2],[2026,3],[2026,4],[2026,5],[2026,6],[2026,7],
+    [2026,8],[2026,9],[2026,10],[2026,11],[2027,0],[2027,1]
   ];
   const idx = months.findIndex(([y,m]) => y === currentYear && m === currentMonth);
   const newIdx = idx + dir;
@@ -1800,11 +1765,6 @@ function changeMonth(dir) {
 // ─── INIT ───
 initStars();
 updateProgress();
-
-// Pre-fill test date input with today
-const _today = new Date();
-const _pad = n => String(n).padStart(2,'0');
-document.getElementById('test-date').value = `${_today.getFullYear()}-${_pad(_today.getMonth()+1)}-${_pad(_today.getDate())}`;
 
 // Navigate to current month if in range, else start of calendar
 const t = new Date();
